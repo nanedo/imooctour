@@ -27,25 +27,24 @@
 <script>
 export default {
   props: {
-      isShow: {
-          type: Boolean
-      }
+    isShow: {
+      type: Boolean
+    }
   },
   data () {
-      return {
-          usernameModel: '',
-          passwordModel: '',
-          errorText: ''
-      }
+    return {
+      usernameModel: '',
+      passwordModel: '',
+      errorText: ''
+    }
   },
   computed: {
-      userErrors () {
+    userErrors () {
       let errorText, status
       if (!/@/g.test(this.usernameModel)) {
         status = false
         errorText = '不包含@'
-      }
-      else {
+      } else {
         status = true
         errorText = ''
       }
@@ -60,11 +59,10 @@ export default {
     },
     passwordErrors () {
       let errorText, status
-      if (!/^\w{1,6}$/g.test(this.passwordModel)) {
+      if (/^\w{1,6}$/g.test(this.passwordModel)) {
         status = false
         errorText = '密码不是1-6位'
-      }
-      else {
+      } else {
         status = true
         errorText = ''
       }
@@ -79,29 +77,27 @@ export default {
     }
   },
   methods: {
-      onRegister () {
-          if(!this.userErrors.status || !this.passwordErrors.status){
-              this.errorText = '部分选项未通过'
-          }else{
-              console.log('这里显示登录状态，比如一个loading图标')
-              this.errorText = ''
-              this.$http.post('/api/register',{
-                  username: this.usernameModel,
-                  password: this.passwordModel
-              })
-              .then(res => {
-                  if(res.data.status === 'success'){
-                      this.$emit('has-log', res.data)
-                  }else{
-                      this.errorText = res.data.msg
-                  }
-                  
-              }, err => {
-                  console.log('login error: ',err)
-              })
-              
-          }
+    onRegister () {
+      if (!this.userErrors.status || !this.passwordErrors.status) {
+        this.errorText = '部分选项未通过'
+      } else {
+        console.log('这里显示登录状态，比如一个loading图标')
+        this.errorText = ''
+        this.$http.post('/api/register', {
+          username: this.usernameModel,
+          password: this.passwordModel
+        })
+          .then(res => {
+            if (res.data.status === 'success') {
+              this.$emit('has-log', res.data)
+            } else {
+              this.errorText = res.data.msg
+            }
+          }, err => {
+            console.log('login error: ', err)
+          })
       }
+    }
   }
 }
 </script>

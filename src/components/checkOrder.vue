@@ -18,42 +18,45 @@ import Dialog from './base/dialog'
 
 export default {
   props: {
-      "isShowCheckDialog": {
-          type: Boolean,
-          default: false
-      },
-      "orderId": {
-          type: [String, Number]
-      }
+    'isShowCheckDialog': {
+      type: Boolean,
+      default: false
+    },
+    'orderId': {
+      type: [String, Number]
+    }
   },
   components: {
-      thisDialog: Dialog
+    thisDialog: Dialog
   },
   data () {
-      return {
-          isShowSuccessDialog: false,
-          isShowFailDialog: false
-      }
+    return {
+      isShowSuccessDialog: false,
+      isShowFailDialog: false
+    }
   },
   methods: {
-      checkStatus () {
-          this.$http.post('/api/checkOrder', {
-              orderId: this.orderId
-          }).then((res) => {
-              this.isShowSuccessDialog = true
-              this.$emit('on-close-check-dialog')
-          }, (err) => {
-              this.isShowFailDialog = true
-              this.$emit('on-close-check-dialog')
-          })
-      },
-      toOrderList () {
-          this.$router.push({path: '/orderList'})
-      }
+    checkStatus () {
+      this.$http.post('/api/checkOrder', {
+        orderId: this.orderId
+      }).then((res) => {
+        this.isShowSuccessDialog = true
+        this.$emit('on-close-check-dialog')
+      }, (err) => {
+        console.log(err)
+        this.isShowFailDialog = true
+        this.$emit('on-close-check-dialog')
+      })
+    },
+    toOrderList () {
+      // 关闭弹窗
+      this.isShowSuccessDialog = false
+      this.isShowFailDialog = false
+      this.$router.push({path: '/orderList'})
+    }
   }
 }
 </script>
 <style scoped>
 
 </style>
-

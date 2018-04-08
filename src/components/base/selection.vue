@@ -20,39 +20,41 @@ import {eventBus} from '../../eventBus'
 
 export default {
   mounted () {
-      eventBus.$on('reset-component', () => {
-          console.log('emit quick2?', this.isDroped.toString())
-          this.isDroped = false
-      })
+    eventBus.$on('reset-component', () => {
+      console.log('emit quick2?', this.isDroped.toString())
+      this.isDroped = false
+    })
   },
   props: {
-      selections: {
-          type: Array,
-          default: [{
-              label: 'test',
-              value: 0
-          }]
+    selections: {
+      type: Array,
+      default: () => {
+        return [{
+          label: 'test',
+          value: 0
+        }]
       }
+    }
   },
-  data (){
-      return {
-          selected: 0,
-          isDroped: false
-      }
+  data () {
+    return {
+      selected: 0,
+      isDroped: false
+    }
   },
   methods: {
-      changeDrop () {
-          if(this.isDroped === false){
-              eventBus.$emit('reset-component')
-          }
-          this.isDroped = !this.isDroped
-          console.log('emit quick?', this.isDroped.toString())
-      },
-      selectItem (val) {
-          this.selected = val
-          this.isDroped = false
-          this.$emit('on-change', this.selections[this.selected])
+    changeDrop () {
+      if (this.isDroped === false) {
+        eventBus.$emit('reset-component')
       }
+      this.isDroped = !this.isDroped
+      console.log('emit quick?', this.isDroped.toString())
+    },
+    selectItem (val) {
+      this.selected = val
+      this.isDroped = false
+      this.$emit('on-change', this.selections[this.selected])
+    }
   }
 }
 </script>

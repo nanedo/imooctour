@@ -6,14 +6,14 @@ import router from './router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import store from './store'
-// 改为直接引入mock数据 
+// 改为直接引入mock数据
 import './mock'
 
 // 测试环境下引入mock库
 // if(process.env.NODE_ENV === 'development'){
 //  console.log('import mock data~~~')
 //  require('./mock')
-//} 
+// }
 
 Vue.use(VueAxios, axios)
 

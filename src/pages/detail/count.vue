@@ -10,7 +10,7 @@
                   产品类型：
               </div>
               <div class="sales-board-line-right">
-                  <v-chooser :selections="buyTypes"></v-chooser>
+                  <v-chooser :selections="buyTypes" @on-change="onParamChange('buyType', $event)"></v-chooser>
               </div>
           </div>
           <div class="sales-board-line">
@@ -18,7 +18,7 @@
                   适用地区：
               </div>
               <div class="sales-board-line-right">
-                  <v-selection :selections="districts"></v-selection>
+                  <v-selection :selections="districts" @on-change="onParamChange('area', $event)"></v-selection>
               </div>
           </div>
           <div class="sales-board-line">
@@ -34,13 +34,13 @@
                   总价：
               </div>
               <div class="sales-board-line-right">
-                  500 元
+                  {{ price }} 元
               </div>
           </div>
           <div class="sales-board-line">
               <div class="sales-board-line-left">&nbsp;</div>
               <div class="sales-board-line-right">
-                  <div class="button">
+                  <div class="button" @click="showPayDialog">
                     立即购买
                   </div>
               </div>
@@ -240,60 +240,122 @@
           </tbody>
       </table>
       </div>
+      <Payment :is-show="isShowPayDialog"  :req-params="reqParams" :items="items" @close="hidePayDialog"></Payment>
   </div>
 </template>
 <script>
 import VSelection from '@/components/base/selection'
 import VChooser from '@/components/base/chooser'
+import Payment from '@/components/payment'
 
 export default {
   components: {
-      VSelection,
-      VChooser
+    VSelection,
+    VChooser,
+    Payment
   },
   data () {
-      return {
-          districts: [
-            {
-            label: '北京',
-            value: 0
-            },
-            {
-            label: '上海',
-            value: 1
-            },
-            {
-            label: '广州',
-            value: 2
-            },
-            {
-            label: '天津',
-            value: 3
-            },
-            {
-            label: '武汉',
-            value: 4
-            },
-            {
-            label: '重庆',
-            value: 5
-            },
-          ],
-          buyTypes: [
-            {
-            label: '红色版',
-            value: 0
-            },
-            {
-            label: '绿色版',
-            value: 1
-            },
-            {
-            label: '紫色版',
-            value: 2
-            }
-          ]
+    return {
+      isShowPayDialog: false,
+      reqParams: {},
+      items: [{
+        label: '产品类型',
+        value: ''
+      }, {
+        label: '使用地区',
+        value: ''
+      }, {
+        label: '有效时间',
+        value: ''
+      }, {
+        label: '总价',
+        value: ''
+      }],
+      price: 0,
+      buyType: {},
+      area: {},
+      period: {label: '半年', value: '1'},
+      // 页面数据
+      districts: [
+        {
+          label: '北京',
+          value: 0
+        },
+        {
+          label: '上海',
+          value: 1
+        },
+        {
+          label: '广州',
+          value: 2
+        },
+        {
+          label: '天津',
+          value: 3
+        },
+        {
+          label: '武汉',
+          value: 4
+        },
+        {
+          label: '重庆',
+          value: 5
+        }
+      ],
+      buyTypes: [
+        {
+          label: '红色版',
+          value: 0
+        },
+        {
+          label: '绿色版',
+          value: 1
+        },
+        {
+          label: '紫色版',
+          value: 2
+        }
+      ]
+    }
+  },
+  methods: {
+    hidePayDialog () {
+      this.isShowPayDialog = false
+    },
+    showPayDialog () {
+      // 设置传过去的商品信息
+      this.items[0].value = this.buyType.label
+      this.items[1].value = this.area.label
+      this.items[2].value = this.period.label
+      this.items[3].value = this.price
+
+      this.isShowPayDialog = true
+    },
+    onParamChange (type, val) {
+      this[type] = val
+      this.getPrice()
+    },
+    getPrice () {
+      this.reqParams = {
+        area: this.area.value,
+        buyType: this.buyType.value,
+        period: this.period.value,
+        product: '数据统计',
+        'productId': 0
       }
+      this.$http.post('/api/getPrice', this.reqParams)
+        .then((res) => {
+          this.price = res.data.amount
+        }, err => {
+          console.log('getPrice Error: ', err)
+        })
+    }
+  },
+  mounted () {
+    this.buyType = this.buyTypes[0]
+    this.area = this.districts[0]
+
+    this.getPrice()
   }
 }
 </script>

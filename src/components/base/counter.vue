@@ -1,5 +1,5 @@
 <template>
-  <div class="counter-component">   
+  <div class="counter-component">
       <div class="counter-btn" @click="minus"> - </div>
       <div class="counter-show">
           <input type="text" v-model.number="number" @keyup="fixNumber">
@@ -10,48 +10,47 @@
 <script>
 export default {
   props: {
-      min: {
-          type: Number,
-          default: 1
-      },
-      max: {
-          type: Number,
-          default: 5
-      }
+    min: {
+      type: Number,
+      default: 1
+    },
+    max: {
+      type: Number,
+      default: 5
+    }
   },
   data () {
-      return {
-          number: this.min
-      }
+    return {
+      number: this.min
+    }
   },
   methods: {
-      fixNumber () {
-          let fix
-          if(typeof this.number === 'string'){
-              fix = Number(this.number.replace(/\D/g,''))
-          } else {
-              fix = this.number
-          }
-          if(fix > this.max){
-              fix = this.max
-          }
-          if(fix < this.min){
-              fix = this.min
-          }
-          this.number = fix
-      },
-      minus () {
-          this.number = this.number - 1 < this.min ? this.min : this.number - 1
-      },
-      add () {
-          this.number = this.number + 1 > this.max ? this.max : this.number + 1
-          
+    fixNumber () {
+      let fix
+      if (typeof this.number === 'string') {
+        fix = Number(this.number.replace(/\D/g, ''))
+      } else {
+        fix = this.number
       }
+      if (fix > this.max) {
+        fix = this.max
+      }
+      if (fix < this.min) {
+        fix = this.min
+      }
+      this.number = fix
+    },
+    minus () {
+      this.number = this.number - 1 < this.min ? this.min : this.number - 1
+    },
+    add () {
+      this.number = this.number + 1 > this.max ? this.max : this.number + 1
+    }
   },
   watch: {
-      number () {
-          this.$emit('on-change', this.number)
-      }
+    number () {
+      this.$emit('on-change', this.number)
+    }
   }
 }
 </script>

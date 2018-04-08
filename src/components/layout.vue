@@ -2,7 +2,7 @@
   <div @click="resetSelect">
       <div class="app-head">
           <div class="app-head-inner">
-              <img src="../assets/logo.png" alt="">
+              <router-link to="/"><img src="../assets/logo.png" alt=""></router-link>
               <div class="head-nav">
                   <ul class="nav-list">
                       <li>{{ username }}</li>
@@ -44,65 +44,64 @@ import {eventBus} from '../eventBus'
 Vue.use(VueCookies)
 
 export default {
- components: {
-     MyDialog,
-     LogForm,
-     RegForm,
-     About
- },
- created () {
-     // 在这里读取cookie，看是否为登录状态
-     if(this.$cookies.get('username')){
-         this.username = this.$cookies.get('username')
-     }
-     // 如果没有登录， 则显示登录框
-     let _this = this
-     axios.interceptors.request.use(function (config) {
-        console.log('axios config: ', config)
-        if(/(login|logout|getPrice|getNewsList|getOrderList|register)/g.test(config.url)){
-            return config
-        } else if(_this.username) {
-            return config
-        }else{
-            _this.isShowPop = true
-            _this.popCom = 'LogForm'
-            return config
-        }
-        // 在发送请求之前做些什么
-        return config
+  components: {
+    MyDialog,
+    LogForm,
+    RegForm,
+    About
+  },
+  created () {
+    // 在这里读取cookie，看是否为登录状态
+    if (this.$cookies.get('username')) {
+      this.username = this.$cookies.get('username')
+    }
+    // 如果没有登录， 则显示登录框
+    let _this = this
+    axios.interceptors.response.use(function (res) {
+      let config = res.config
+      let data = res.data
+      console.log('axios config: ', config)
+      if (data.nologin === true) {
+        _this.isShowPop = true
+        _this.popCom = 'LogForm'
+        // 只有这样才能拦截后续的reslove处理
+        return Promise.reject('nologin')
+      } else {
+        return res
+      }
     }, function (error) {
-        // 对请求错误做些什么
-        return Promise.reject(error)
+      // 对请求错误做些什么
+      return Promise.reject(error)
     })
- },
- data () {
-     return {
-         isShowPop: false,
-         popCom: 'Hello',
-         username: ''
-     }
- },
- methods: {
-     logClick () {
-         this.isShowPop = true
-         this.popCom = 'LogForm'
-     },
-     regClick () {
-         this.isShowPop = true
-         this.popCom = 'RegForm'
-     },
-     aboutClick () {
-         this.isShowPop = true
-         this.popCom = 'About'
-     },
-     closeDialog () {
-         this.isShowPop = false
-     },
-     onSuccessLog (data) {
-         this.closeDialog()
-         this.username = data.username
-     },
-/*      onSuccessLogout (data) {
+  },
+  data () {
+    return {
+      isShowPop: false,
+      popCom: 'Hello',
+      username: ''
+    }
+  },
+  methods: {
+    logClick () {
+      this.isShowPop = true
+      this.popCom = 'LogForm'
+    },
+    regClick () {
+      this.isShowPop = true
+      this.popCom = 'RegForm'
+    },
+    aboutClick () {
+      this.isShowPop = true
+      this.popCom = 'About'
+    },
+    closeDialog () {
+      this.isShowPop = false
+    },
+    onSuccessLog (data) {
+      this.closeDialog()
+      this.username = data.username
+    },
+    /*      onSuccessLogout (data) {
          this.username = data.username
      },
      quit () {
@@ -110,23 +109,23 @@ export default {
          this.$cookies.set('username','')
          this.username = ''
      }, */
-     logout () {
-        this.$http.get('/api/logout').then(res => {
-            this.username = ''
-            console.log('退出登录后，直接重载页面清空所有状态是最方便的')
-        }, err => {
-            console.log('logout error: ', err)
-        })
-     },
-     resetSelect () {
-       eventBus.$emit('reset-component')
-     }
-     
- }
+    logout () {
+      this.$http.get('/api/logout').then(res => {
+        this.username = ''
+        console.log('退出登录后，直接重载页面清空所有状态是最方便的')
+      }, err => {
+        console.log('logout error: ', err)
+      })
+    },
+    resetSelect () {
+      eventBus.$emit('reset-component')
+    }
+
+  }
 }
 </script>
 <style>
-/* http://meyerweb.com/eric/tools/css/reset/ 
+/* http://meyerweb.com/eric/tools/css/reset/
    v2.0 | 20110126
    License: none (public domain)
 */
@@ -140,8 +139,8 @@ b, u, i, center,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
   margin: 0;
@@ -152,7 +151,7 @@ time, mark, audio, video {
   vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
+article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
   display: block;
 }
@@ -190,6 +189,7 @@ body {
   height: 90px;
   line-height: 90px;
   width: 100%;
+  min-width: 1200px;
 }
 .app-head-inner {
   width: 1200px;

@@ -13,22 +13,22 @@
 </template>
 <script>
 export default {
-   name: 'Dialog',
-   props: {
+  name: 'Dialog',
+  props: {
     isShow: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false
     }
   },
   data () {
-      return {
+    return {
 
-      }
+    }
   },
   methods: {
-      closeMyself () {
-          this.$emit('on-close')
-      }
+    closeMyself () {
+      this.$emit('on-close')
+    }
   }
 }
 </script>

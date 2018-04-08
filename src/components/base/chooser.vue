@@ -8,25 +8,27 @@
 <script>
 export default {
   props: {
-      selections: {
-          type: Array,
-          default: [{
-              label: 'test',
-              value: 0
-          }]
-      }
-  },
-    data () {
+    selections: {
+      type: Array,
+      default: () => {
         return {
-            selectIndex: 0
+          label: 'test',
+          value: 0
         }
-    },
-    methods: {
-        selectItem (index) {
-            this.selectIndex = index
-            this.$emit('on-change',this.selections[this.selectIndex])
-        }
+      }
     }
+  },
+  data () {
+    return {
+      selectIndex: 0
+    }
+  },
+  methods: {
+    selectItem (index) {
+      this.selectIndex = index
+      this.$emit('on-change', this.selections[this.selectIndex])
+    }
+  }
 }
 </script>
 <style scoped>

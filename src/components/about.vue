@@ -7,7 +7,6 @@
 </template>
 <script>
 export default {
-  
 }
 </script>
 <style scoped>
@@ -22,4 +21,3 @@ p{
     margin-bottom: 10px;
 }
 </style>
-

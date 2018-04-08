@@ -10,7 +10,7 @@
                   购买数量：
               </div>
               <div class="sales-board-line-right">
-                  <v-counter :max="100" :min="20"></v-counter>
+                  <v-counter :max="100" :min="initNum" @on-change="onParamChange('buyNum', $event)"></v-counter>
               </div>
           </div>
           <div class="sales-board-line">
@@ -18,7 +18,7 @@
                   媒介：
               </div>
               <div class="sales-board-line-right">
-                  <v-mul-chooser :selections="versionList"></v-mul-chooser>
+                  <v-mul-chooser :selections="versionList"  @on-change="onParamChange('versions', $event)"></v-mul-chooser>
               </div>
           </div>
           <div class="sales-board-line">
@@ -40,7 +40,7 @@
           <div class="sales-board-line">
               <div class="sales-board-line-left">&nbsp;</div>
               <div class="sales-board-line-right">
-                  <div class="button">
+                  <div class="button" @click="showPayDialog">
                     立即购买
                   </div>
               </div>
@@ -54,39 +54,104 @@
 作为预测分析领域的专家，埃里克·西格尔博士深谙预测分析界已经实现和正在发生的事情、面临的问题和将来可能的前景。在《大数据预测》一书中，他结合预测分析的应用实例，对其进行了深入、细致且全面的解读。
 关于预测分析，你想了解的全部，你的生活以及这个世界会因为预测分析改变到什么程度，《大数据预测》都会告诉你。</p>
       </div>
+      <Payment :is-show="isShowPayDialog"  :req-params="reqParams" :items="items" @close="hidePayDialog"></Payment>
   </div>
 </template>
 <script>
 import VMulChooser from '@/components/base/multiplyChooser'
 import VCounter from '@/components/base/counter'
-
+import Payment from '@/components/payment'
 
 export default {
   components: {
-      VMulChooser,
-      VCounter
+    VMulChooser,
+    VCounter,
+    Payment
   },
   data () {
-      return {
-        versionList: [
-            {
-            label: '纸质报告',
-            value: 0
-            },
-            {
-            label: 'pdf',
-            value: 1
-            },
-            {
-            label: '页面报告',
-            value: 2
-            },
-            {
-            label: '邮件',
-            value: 3
-            }
-        ] 
+    return {
+      isShowPayDialog: false,
+      reqParams: {},
+      items: [{
+        label: '购买数量',
+        value: ''
+      }, {
+        label: '媒介',
+        value: ''
+      }, {
+        label: '有效时间',
+        value: ''
+      }, {
+        label: '总价',
+        value: ''
+      }],
+      price: 0,
+      buyNum: 0,
+      versions: [],
+      period: {label: '一年', value: '2'},
+      // 页面数据
+      initNum: 20,
+      versionList: [
+        {
+          label: '纸质报告',
+          value: 0
+        },
+        {
+          label: 'pdf',
+          value: 1
+        },
+        {
+          label: '页面报告',
+          value: 2
+        },
+        {
+          label: '邮件',
+          value: 3
+        }
+      ]
+    }
+  },
+  methods: {
+    hidePayDialog () {
+      this.isShowPayDialog = false
+    },
+    showPayDialog () {
+      // 设置传过去的商品信息
+      this.items[0].value = this.buyNum
+      this.items[1].value = this.versions
+      this.items[2].value = this.period.label
+      this.items[3].value = this.price
+
+      this.isShowPayDialog = true
+    },
+    onParamChange (type, val) {
+      this[type] = val
+      this.getPrice()
+    },
+    getPrice () {
+      let buyVersionsArray = this.versions.map((item) => {
+        return item.value
+      })
+      this.reqParams = {
+        buyNumber: this.buyNum,
+        period: this.period.value,
+        version: buyVersionsArray.join(','),
+        'productId': 1,
+        product: '数据预测'
       }
+      this.$http.post('/api/getPrice', this.reqParams)
+        .then((res) => {
+          this.price = res.data.amount
+        }, err => {
+          console.log('getPrice Error: ', err)
+        })
+    }
+  },
+  mounted () {
+    this.buyNum = this.initNum
+    this.versions = [this.versionList[0]]
+
+    this.getPrice()
   }
 }
 </script>

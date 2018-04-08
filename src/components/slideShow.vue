@@ -24,74 +24,74 @@
 <script>
 export default {
   props: {
-      slides: {
-          type: Array,
-          default: [],
-          required: true
+    slides: {
+      type: Array,
+      default: () => {
+        return []
       },
-      inv: {
-          type: Number,
-          default: 1000
-      },
-      doSomethingByEmit: {
-          type: Function
-      }
+      required: true
+    },
+    inv: {
+      type: Number,
+      default: 1000
+    },
+    doSomethingByEmit: {
+      type: Function
+    }
   },
   data () {
-      return {
-          nowIndex: 0,
-          isShow: true,
-          slideLeaveTrans: 'slide-trans-old',
-          slideEnterTrans: 'slide-trans'
-      }
+    return {
+      nowIndex: 0,
+      isShow: true,
+      slideLeaveTrans: 'slide-trans-old',
+      slideEnterTrans: 'slide-trans'
+    }
   },
   computed: {
-      prevIndex () {
-          
-          if(this.nowIndex === 0){
-              return this.slides.length - 1
-          }
-          return this.nowIndex - 1
-      },
-      nextIndex () {
-          
-          if(this.nowIndex === this.slides.length - 1){
-              return 0
-          }
-          return this.nowIndex + 1
+    prevIndex () {
+      if (this.nowIndex === 0) {
+        return this.slides.length - 1
       }
+      return this.nowIndex - 1
+    },
+    nextIndex () {
+      if (this.nowIndex === this.slides.length - 1) {
+        return 0
+      }
+      return this.nowIndex + 1
+    }
   },
   methods: {
-      goto (index) {
-          // 根据大小比较判断切换方向
-          if(this.nowIndex<index){
-              this.slideLeaveTrans = 'slide-trans-old'
-              this.slideEnterTrans = 'slide-trans'
-          }else{
-              this.slideLeaveTrans = 'slide-trans-old-right'
-              this.slideEnterTrans = 'slide-trans-right'
-          }
-          
-          // this.$emit('doSomethingByEmit', this.nowIndex)
-
-          this.isShow = false
-          //通过显隐执行动画，切换状态
-          setTimeout(() => {
-              this.isShow = true
-              this.nowIndex = index
-          }, 10)
-      },
-      runInv () {
-          this.invId = setInterval(() => {
-              this.goto(this.nextIndex)
-          }, this.inv)
-      },
-      clearInv () {
-          clearInterval(this.invId)
+    goto (index) {
+      // 根据大小比较判断切换方向
+      if (this.nowIndex < index) {
+        this.slideLeaveTrans = 'slide-trans-old'
+        this.slideEnterTrans = 'slide-trans'
+      } else {
+        this.slideLeaveTrans = 'slide-trans-old-right'
+        this.slideEnterTrans = 'slide-trans-right'
       }
+
+      // this.$emit('doSomethingByEmit', this.nowIndex)
+
+      this.isShow = false
+      // 通过显隐执行动画，切换状态
+      setTimeout(() => {
+        this.isShow = true
+        this.nowIndex = index
+      }, 10)
+    },
+    runInv () {
+      this.invId = setInterval(() => {
+        this.goto(this.nextIndex)
+      }, this.inv)
+    },
+    clearInv () {
+      clearInterval(this.invId)
+    }
   },
   mounted () {
-      this.runInv()
+    this.runInv()
   }
 }
 </script>

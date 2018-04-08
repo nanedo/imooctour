@@ -8,7 +8,6 @@ import ForecastPage from '@/pages/detail/forecast'
 import AnalysisPage from '@/pages/detail/analysis'
 import PublishPage from '@/pages/detail/publish'
 
-
 Vue.use(Router)
 
 export default new Router({
@@ -31,19 +30,19 @@ export default new Router({
       component: DetailPage,
       children: [
         {
-          path: "forecast",
+          path: 'forecast',
           component: ForecastPage
         },
         {
-          path: "count",
+          path: 'count',
           component: CountPage
         },
         {
-          path: "analysis",
+          path: 'analysis',
           component: AnalysisPage
         },
         {
-          path: "publish",
+          path: 'publish',
           component: PublishPage
         }
       ]
