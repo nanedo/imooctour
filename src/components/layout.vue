@@ -5,6 +5,7 @@
               <router-link to="/"><img src="../assets/logo.png" alt=""></router-link>
               <div class="head-nav">
                   <ul class="nav-list">
+                     <li><iframe src="https://ghbtns.com/github-btn.html?user=nanedo&repo=imooctour&type=watch&count=false&size=large" frameborder="0" scrolling="0" width="100px" height="30px"></iframe></li>
                       <li>{{ username }}</li>
                       <li v-if="username!==''" class="nav-pile">|</li>
                       <li v-if="username!==''" @click="logout">退出</li>
