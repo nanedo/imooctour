@@ -244,9 +244,7 @@ body {
 .button:hover {
   background: #019452;
 }
-.g-form {
 
-}
 .g-form-line {
   padding: 15px 0;
 }
